@@ -84,7 +84,6 @@ ThemeManager:ApplyToTab(Tabs['UI Settings'])
  
  
 SaveManager:LoadAutoloadConfig()
-
 -- UI Settings
 local MenuGroup = Tabs['UI Settings']:AddLeftGroupbox('Menu')
 
@@ -126,4 +125,5 @@ ThemeManager:ApplyToTab(Tabs['UI Settings'])
 -- You can use the SaveManager:LoadAutoloadConfig() to load a config
 -- which has been marked to be one that auto loads!
 SaveManager:LoadAutoloadConfig()
+
 
