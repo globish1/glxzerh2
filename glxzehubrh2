@@ -1,0 +1,86 @@
+local repo = 'https://raw.githubusercontent.com/violin-suzutsuki/LinoriaLib/main/'
+ 
+local Library = loadstring(game:HttpGet(repo .. 'Library.lua'))()
+local ThemeManager = loadstring(game:HttpGet(repo .. 'addons/ThemeManager.lua'))()
+local SaveManager = loadstring(game:HttpGet(repo .. 'addons/SaveManager.lua'))()
+ 
+ 
+local Window = Library:CreateWindow({
+    Title = 'Glxze Hub | RH2',
+    Center = true,
+    AutoShow = true,
+    TabPadding = 8,
+    MenuFadeTime = 0.2
+})
+ 
+ 
+local Tabs = {
+    Main = Window:AddTab('Main'),
+    ['UI Settings'] = Window:AddTab('UI Settings'),
+}
+ 
+local LeftGroupBox = Tabs.Main:AddLeftGroupbox('Shooting')
+LeftGroupBox:AddToggle('MyToggle', {
+    Text = 'Auto Time',
+    Default = false, -- Default value (true / false)
+    Tooltip = 'Only works on moving shots', -- Information shown when you hover over the toggle
+ 
+    Callback = function(Value)local Players = game:GetService("Players")
+        local LocalPlayer = Players.LocalPlayer
+        local Backpack = LocalPlayer.Backpack
+        local ActionValues = Backpack.ActionValues
+        local PlayerEvents = Backpack.PlayerEvents
+        
+        local function handlePowerChanged()
+            if ActionValues.Power.Value >= 61.5 then
+        PlayerEvents.Shooting:FireServer(false, "Shooting", "Standing Shot")
+            end
+        end
+        
+        ActionValues.Power:GetPropertyChangedSignal("Value"):Connect(handlePowerChanged)
+        print('[cb] MyToggle changed to:', Value)
+    end
+})
+ 
+local LeftGroupBox = Tabs.Main:AddLeftGroupbox('.')
+LeftGroupBox:AddToggle('MyToggle', {
+    Text = 'Inf Stamina',
+    Default = false, -- Default value (true / false)
+    Tooltip = 'Only works on moving shots', -- Information shown when you hover over the toggle
+ 
+    Callback = function(Value)local Dick = game:GetService("Players").LocalPlayer.Backpack.ActionValues.Stamina
+ 
+        local DickMoney
+        DickMoney = hookmetamethod(game, "__index", function(self, v)
+            if self == Dick and v == "Value" then
+                return 9e9
+            end
+            return DickMoney(self, v)
+        end)
+        print('[cb] MyToggle changed to:', Value)
+    end
+})
+ 
+ 
+MenuGroup:AddButton('Unload', function() Library:Unload() end)
+ 
+ 
+MenuGroup:AddLabel('Menu bind'):AddKeyPicker('MenuKeybind', { Default = 'End', NoUI = true, Text = 'Menu keybind' })
+Library.ToggleKeybind = Options.MenuKeybind 
+ 
+ 
+ThemeManager:SetLibrary(Library)
+SaveManager:SetLibrary(Library)
+ 
+ 
+SaveManager:IgnoreThemeSettings()
+SaveManager:SetIgnoreIndexes({ 'MenuKeybind' })
+ThemeManager:SetFolder('MyScriptHub')
+SaveManager:SetFolder('MyScriptHub/specific-game')
+ 
+ 
+SaveManager:BuildConfigSection(Tabs['UI Settings'])
+ThemeManager:ApplyToTab(Tabs['UI Settings'])
+ 
+ 
+SaveManager:LoadAutoloadConfig()
